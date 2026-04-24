@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Timeline</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="timeline-wrap">
+
+  <div class="timeline">
+    <div class="node" onclick="openPanel(1)">
+      <div class="node-card">Project A</div>
+    </div>
+
+    <div class="node" onclick="openPanel(2)">
+      <div class="node-card">Project B</div>
+    </div>
+
+    <div class="node" onclick="openPanel(3)">
+      <div class="node-card">Project C</div>
+    </div>
+
+    <div class="node" onclick="openPanel(4)">
+      <div class="node-card">Project D</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FULL SCREEN PANEL -->
+<div class="overlay" id="overlay">
+  <div class="panel">
+
+    <div class="panel-top">
+      <div class="gallery">
+        <div class="img"></div>
+        <div class="img"></div>
+        <div class="img"></div>
+        <div class="img"></div>
+      </div>
+    </div>
+
+    <div class="panel-bottom">
+      <div class="text">
+        <h2>Project Title</h2>
+        <p>
+          Body text goes here. This section scrolls independently.
+          You can dump long descriptions, logs, notes, etc.
+        </p>
+        <p>
+          More placeholder text. Keep expanding content here.
+        </p>
+      </div>
+    </div>
+
+    <div class="close" onclick="closePanel()">×</div>
+
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
