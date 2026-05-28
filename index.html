@@ -1,174 +1,490 @@
-export default function OscillatingMouseField() {
-  return (
-    <div className="w-full h-screen bg-black overflow-hidden relative">
-      <canvas id="oscCanvas" className="absolute inset-0 w-full h-full" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-      <div className="absolute top-6 left-1/2 -translate-x-1/2 z-10">
-        <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl px-6 py-4 shadow-2xl">
-          <h1 className="text-white text-2xl md:text-4xl font-bold tracking-tight text-center">
-            Oscillating Neural Field
-          </h1>
-          <p className="text-white/60 text-sm md:text-base text-center mt-2">
-            Move your mouse and disturb the waves.
-          </p>
-        </div>
-      </div>
+  <title>Oscillating Neural Field</title>
 
-      <Script />
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    html,body{
+      width:100%;
+      height:100%;
+      overflow:hidden;
+      background:#000;
+      font-family:Arial, Helvetica, sans-serif;
+    }
+
+    canvas{
+      position:fixed;
+      inset:0;
+      width:100%;
+      height:100%;
+    }
+
+    .hero{
+      position:absolute;
+      top:50%;
+      left:50%;
+      transform:translate(-50%,-50%);
+      z-index:10;
+
+      width:min(900px,90vw);
+
+      padding:40px;
+
+      border-radius:30px;
+
+      background:rgba(255,255,255,0.05);
+
+      border:1px solid rgba(255,255,255,0.08);
+
+      backdrop-filter:blur(18px);
+
+      box-shadow:
+        0 0 30px rgba(255,255,255,0.05),
+        0 0 80px rgba(0,255,255,0.08);
+    }
+
+    .small{
+      color:rgba(255,255,255,0.7);
+      letter-spacing:4px;
+      text-transform:uppercase;
+      font-size:0.8rem;
+      margin-bottom:20px;
+    }
+
+    h1{
+      color:white;
+      font-size:clamp(3rem,8vw,7rem);
+      line-height:0.95;
+      letter-spacing:-5px;
+      font-weight:900;
+    }
+
+    .gradient{
+      background:linear-gradient(
+        90deg,
+        #00ffff,
+        #ff00ff,
+        #00ffff
+      );
+
+      background-size:300%;
+
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+
+      animation:gradientShift 6s linear infinite;
+    }
+
+    @keyframes gradientShift{
+      0%{
+        background-position:0%;
+      }
+      100%{
+        background-position:300%;
+      }
+    }
+
+    p{
+      margin-top:25px;
+      color:rgba(255,255,255,0.7);
+      font-size:1.1rem;
+      line-height:1.7;
+      max-width:700px;
+    }
+
+    .buttons{
+      display:flex;
+      gap:18px;
+      margin-top:35px;
+      flex-wrap:wrap;
+    }
+
+    button{
+      border:none;
+      cursor:pointer;
+
+      padding:16px 28px;
+
+      border-radius:16px;
+
+      font-size:1rem;
+      font-weight:700;
+
+      transition:0.3s ease;
+    }
+
+    .primary{
+      background:white;
+      color:black;
+    }
+
+    .primary:hover{
+      transform:translateY(-4px) scale(1.03);
+      box-shadow:0 10px 30px rgba(255,255,255,0.25);
+    }
+
+    .secondary{
+      background:rgba(255,255,255,0.08);
+      color:white;
+
+      border:1px solid rgba(255,255,255,0.1);
+    }
+
+    .secondary:hover{
+      transform:translateY(-4px) scale(1.03);
+
+      background:rgba(255,255,255,0.12);
+    }
+
+    .glow{
+      position:absolute;
+      width:600px;
+      height:600px;
+
+      background:radial-gradient(
+        circle,
+        rgba(0,255,255,0.15),
+        transparent 70%
+      );
+
+      filter:blur(60px);
+
+      z-index:0;
+
+      pointer-events:none;
+    }
+
+    .glow1{
+      top:-200px;
+      left:-200px;
+    }
+
+    .glow2{
+      bottom:-250px;
+      right:-250px;
+
+      background:radial-gradient(
+        circle,
+        rgba(255,0,255,0.15),
+        transparent 70%
+      );
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <div class="glow glow1"></div>
+  <div class="glow glow2"></div>
+
+  <canvas id="canvas"></canvas>
+
+  <section class="hero">
+
+    <div class="small">
+      Interactive Experience
     </div>
-  )
-}
 
-function Script() {
-  if (typeof window !== 'undefined') {
-    setTimeout(() => {
-      const existing = window.__oscillatingFieldInitialized
-      if (existing) return
-      window.__oscillatingFieldInitialized = true
+    <h1>
+      Oscillating<br>
+      <span class="gradient">
+        Neural Field
+      </span>
+    </h1>
 
-      const canvas = document.getElementById('oscCanvas')
-      const ctx = canvas.getContext('2d')
+    <p>
+      A reactive generative particle simulation influenced by
+      your mouse movement, animated wave distortion, and dynamic
+      neon color fields.
+    </p>
 
-      let width = canvas.width = window.innerWidth
-      let height = canvas.height = window.innerHeight
+    <div class="buttons">
+      <button class="primary">
+        Explore
+      </button>
 
-      const mouse = {
-        x: width / 2,
-        y: height / 2,
-        radius: 180,
-        velocityX: 0,
-        velocityY: 0,
+      <button class="secondary">
+        Learn More
+      </button>
+    </div>
+
+  </section>
+
+  <script>
+
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    const mouse = {
+      x: width / 2,
+      y: height / 2,
+      radius: 220
+    };
+
+    let particles = [];
+
+    const PARTICLE_COUNT =
+      Math.floor((width * height) / 12000);
+
+    class Particle {
+
+      constructor() {
+
+        this.baseX = Math.random() * width;
+        this.baseY = Math.random() * height;
+
+        this.x = this.baseX;
+        this.y = this.baseY;
+
+        this.size = Math.random() * 2 + 1;
+
+        this.phase = Math.random() * Math.PI * 2;
+
+        this.speed =
+          Math.random() * 0.008 + 0.002;
+
       }
 
-      const particles = []
-      const particleCount = Math.floor((width * height) / 14000)
+      update(time) {
 
-      class Particle {
-        constructor() {
-          this.reset()
-          this.baseX = this.x
-          this.baseY = this.y
-          this.size = Math.random() * 2 + 1
-          this.phase = Math.random() * Math.PI * 2
-          this.speed = Math.random() * 0.008 + 0.002
-          this.offset = Math.random() * 120
-        }
+        const dx = this.x - mouse.x;
+        const dy = this.y - mouse.y;
 
-        reset() {
-          this.x = Math.random() * width
-          this.y = Math.random() * height
-        }
+        const dist =
+          Math.sqrt(dx * dx + dy * dy);
 
-        update(time) {
-          const dx = this.x - mouse.x
-          const dy = this.y - mouse.y
-          const dist = Math.sqrt(dx * dx + dy * dy)
+        const angle =
+          Math.atan2(dy, dx);
 
-          const angle = Math.atan2(dy, dx)
-          const force = Math.max(0, (mouse.radius - dist) / mouse.radius)
+        const force =
+          Math.max(
+            0,
+            (mouse.radius - dist) / mouse.radius
+          );
 
-          const waveX = Math.sin(time * this.speed + this.phase + this.y * 0.008) * 35
-          const waveY = Math.cos(time * this.speed + this.phase + this.x * 0.008) * 35
+        const waveX =
+          Math.sin(
+            time * this.speed +
+            this.phase +
+            this.y * 0.008
+          ) * 35;
 
-          const mouseInfluenceX = Math.cos(angle) * force * 100
-          const mouseInfluenceY = Math.sin(angle) * force * 100
+        const waveY =
+          Math.cos(
+            time * this.speed +
+            this.phase +
+            this.x * 0.008
+          ) * 35;
 
-          this.x += (this.baseX + waveX + mouseInfluenceX - this.x) * 0.04
-          this.y += (this.baseY + waveY + mouseInfluenceY - this.y) * 0.04
-        }
+        const mouseX =
+          Math.cos(angle) *
+          force *
+          100;
 
-        draw(time) {
-          const hue = (
-            (time * 0.02) +
+        const mouseY =
+          Math.sin(angle) *
+          force *
+          100;
+
+        this.x += (
+          this.baseX +
+          waveX +
+          mouseX -
+          this.x
+        ) * 0.04;
+
+        this.y += (
+          this.baseY +
+          waveY +
+          mouseY -
+          this.y
+        ) * 0.04;
+
+      }
+
+      draw(time) {
+
+        const hue =
+          (
+            time * 0.02 +
             this.x * 0.08 +
             this.y * 0.05 +
-            Math.sin(this.phase + time * 0.001) * 80
-          ) % 360
+            Math.sin(
+              this.phase +
+              time * 0.001
+            ) * 80
+          ) % 360;
 
-          ctx.beginPath()
-          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2)
+        ctx.beginPath();
 
-          ctx.fillStyle = `hsla(${hue}, 100%, 70%, 0.9)`
-          ctx.shadowColor = `hsla(${hue}, 100%, 70%, 0.8)`
-          ctx.shadowBlur = 15
-          ctx.fill()
-        }
+        ctx.arc(
+          this.x,
+          this.y,
+          this.size,
+          0,
+          Math.PI * 2
+        );
+
+        ctx.fillStyle =
+          `hsla(${hue},100%,70%,0.9)`;
+
+        ctx.shadowColor =
+          `hsla(${hue},100%,70%,0.8)`;
+
+        ctx.shadowBlur = 15;
+
+        ctx.fill();
+
       }
 
-      for (let i = 0; i < particleCount; i++) {
-        particles.push(new Particle())
+    }
+
+    function initParticles() {
+
+      particles = [];
+
+      for(let i = 0; i < PARTICLE_COUNT; i++){
+
+        particles.push(
+          new Particle()
+        );
+
       }
 
-      function drawConnections(time) {
-        for (let a = 0; a < particles.length; a++) {
-          for (let b = a + 1; b < particles.length; b++) {
-            const p1 = particles[a]
-            const p2 = particles[b]
+    }
 
-            const dx = p1.x - p2.x
-            const dy = p1.y - p2.y
-            const dist = Math.sqrt(dx * dx + dy * dy)
+    initParticles();
 
-            if (dist < 110) {
-              const opacity = 1 - dist / 110
-              const hue = ((time * 0.015) + dist * 1.5) % 360
+    function drawConnections(time){
 
-              ctx.beginPath()
-              ctx.moveTo(p1.x, p1.y)
-              ctx.lineTo(p2.x, p2.y)
+      for(let a = 0; a < particles.length; a++){
 
-              ctx.strokeStyle = `hsla(${hue}, 100%, 65%, ${opacity * 0.18})`
-              ctx.lineWidth = 1
-              ctx.stroke()
-            }
+        for(let b = a + 1; b < particles.length; b++){
+
+          const p1 = particles[a];
+          const p2 = particles[b];
+
+          const dx = p1.x - p2.x;
+          const dy = p1.y - p2.y;
+
+          const dist =
+            Math.sqrt(dx * dx + dy * dy);
+
+          if(dist < 110){
+
+            const opacity =
+              1 - dist / 110;
+
+            const hue =
+              (
+                time * 0.015 +
+                dist * 1.5
+              ) % 360;
+
+            ctx.beginPath();
+
+            ctx.moveTo(p1.x, p1.y);
+
+            ctx.lineTo(p2.x, p2.y);
+
+            ctx.strokeStyle =
+              `hsla(${hue},100%,65%,${opacity * 0.18})`;
+
+            ctx.lineWidth = 1;
+
+            ctx.stroke();
+
           }
+
         }
+
       }
 
-      function animate(time) {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.08)'
-        ctx.fillRect(0, 0, width, height)
+    }
 
-        drawConnections(time)
+    function animate(time){
 
-        particles.forEach((particle) => {
-          particle.update(time)
-          particle.draw(time)
-        })
+      ctx.fillStyle =
+        "rgba(0,0,0,0.08)";
 
-        requestAnimationFrame(animate)
+      ctx.fillRect(
+        0,
+        0,
+        width,
+        height
+      );
+
+      drawConnections(time);
+
+      particles.forEach((particle)=>{
+
+        particle.update(time);
+
+        particle.draw(time);
+
+      });
+
+      requestAnimationFrame(animate);
+
+    }
+
+    animate(0);
+
+    window.addEventListener(
+      "mousemove",
+      (e)=>{
+
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+
       }
+    );
 
-      animate(0)
+    window.addEventListener(
+      "touchmove",
+      (e)=>{
 
-      window.addEventListener('mousemove', (e) => {
-        mouse.velocityX = e.clientX - mouse.x
-        mouse.velocityY = e.clientY - mouse.y
+        mouse.x =
+          e.touches[0].clientX;
 
-        mouse.x = e.clientX
-        mouse.y = e.clientY
-      })
+        mouse.y =
+          e.touches[0].clientY;
 
-      window.addEventListener('touchmove', (e) => {
-        const touch = e.touches[0]
-        mouse.x = touch.clientX
-        mouse.y = touch.clientY
-      })
+      }
+    );
 
-      window.addEventListener('resize', () => {
-        width = canvas.width = window.innerWidth
-        height = canvas.height = window.innerHeight
+    window.addEventListener(
+      "resize",
+      ()=>{
 
-        particles.length = 0
+        width =
+          canvas.width =
+          window.innerWidth;
 
-        const newCount = Math.floor((width * height) / 14000)
+        height =
+          canvas.height =
+          window.innerHeight;
 
-        for (let i = 0; i < newCount; i++) {
-          particles.push(new Particle())
-        }
-      })
-    }, 0)
-  }
+        initParticles();
 
-  return null
-}
+      }
+    );
+
+  </script>
+
+</body>
+</html>
