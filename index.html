@@ -102,21 +102,19 @@ h1{
 }
 
 /* WATERMARK */
-.watermark{
-  position:fixed;
-  bottom:12px;
-  right:16px;
-
-  text-align:right;
-
-  color:rgba(255,255,255,0.35);
-  font-size:12px;
-  line-height:1.2;
-
-  z-index:9999;
-
-  user-select:none;
-  pointer-events:none;
+.watermark {
+  position: fixed;
+  bottom: 40px;
+  right: 0;
+  background: rgba(0, 0, 0, 0.45);
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 12px;
+  line-height: 1.5;
+  padding: 8px 12px;
+  text-align: left;
+  z-index: 9999;
+  user-select: none;
+  pointer-events: none;
 }
 
 /* GLOW */
@@ -170,7 +168,7 @@ h1{
 <!-- WATERMARK -->
 <div class="watermark">
   Activate Windows<br>
-  Go to Settings to activate Windows
+  Go to Settings to activate Windows.
 </div>
 
 <script>
