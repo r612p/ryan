@@ -102,20 +102,37 @@ h1{
 }
 
 /* WATERMARK */
-.watermark {
-  position: fixed;
-  bottom: 40px;
-  right: 0;
-  background: rgba(0, 0, 0, 0.45);
-  color: rgba(255, 255, 255, 0.75);
-  font-size: 12px;
-  line-height: 1.5;
-  padding: 8px 12px;
-  text-align: left;
-  z-index: 9999;
-  user-select: none;
-  pointer-events: none;
+.watermark{
+  position:fixed;
+  bottom:59px;
+  right:99px;
+  
+
+  color:rgba(255,255,255,0.35);
+  text-align:left;
+
+  user-select:none;
+  pointer-events:none;
+
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
+
+.wm-title{
+  font-size:25px; /* base */
+  font-weight:350;
+  position:relative;
+  letter-spacing: .68px;
+  
+}
+
+.wm-sub{
+  font-size:19px;
+  top:5spx;
+  right:2px;
+  
+  position:relative;
+  
+
 
 /* GLOW */
 .glow{
@@ -152,23 +169,22 @@ h1{
 
 <section class="hero">
 
-  <div class="small">Interactive Experience</div>
+  <div class="small">Ryan Pham</div>
 
   <div class="image-placeholder">
     IMAGE PLACEHOLDER
   </div>
 
   <h1>
-    Oscillating<br>
-    <span class="gradient">Neural Field</span>
+    Hi<br>
+    <span class="gradient">    </span>  <!--THE COLOR TEXT IS HERE-->
   </h1>
-
 </section>
 
 <!-- WATERMARK -->
 <div class="watermark">
-  Activate Windows<br>
-  Go to Settings to activate Windows.
+  <span class="wm-title">Activate Windows</span><br>
+  <span class="wm-sub">Go to Settings to activate Windows.</span>
 </div>
 
 <script>
