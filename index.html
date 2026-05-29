@@ -1,435 +1,182 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Oscillating Field</title>
 
-  <title>Oscillating Neural Field</title>
+<style>
+  html,body{
+    margin:0;
+    padding:0;
+    overflow:hidden;
+    background:black;
+  }
 
-  <style>
+  canvas{
+    position:fixed;
+    inset:0;
+  }
 
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-    }
-
-    html,body{
-      width:100%;
-      height:100%;
-      overflow:hidden;
-      background:#000;
-      font-family:Arial, Helvetica, sans-serif;
-    }
-
-    canvas{
-      position:fixed;
-      inset:0;
-      width:100%;
-      height:100%;
-    }
-
-    .hero{
-      position:absolute;
-      top:50%;
-      left:50%;
-      transform:translate(-50%,-50%);
-      z-index:10;
-
-      width:min(900px,90vw);
-
-      padding:40px;
-
-      border-radius:30px;
-
-      background:rgba(255,255,255,0.05);
-
-      border:1px solid rgba(255,255,255,0.08);
-
-      backdrop-filter:blur(18px);
-
-      box-shadow:
-        0 0 30px rgba(255,255,255,0.05),
-        0 0 80px rgba(0,255,255,0.08);
-    }
-
-    .small{
-      color:rgba(255,255,255,0.7);
-      letter-spacing:4px;
-      text-transform:uppercase;
-      font-size:0.8rem;
-      margin-bottom:20px;
-    }
-
-    h1{
-      color:white;
-      font-size:clamp(3rem,8vw,7rem);
-      line-height:0.95;
-      letter-spacing:-5px;
-      font-weight:900;
-    }
-
-    .gradient{
-      background:linear-gradient(
-        90deg,
-        #00ffff,
-        #ff00ff,
-        #00ffff
-      );
-
-      background-size:300%;
-
-      -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;
-
-      animation:gradientShift 6s linear infinite;
-    }
-
-    @keyframes gradientShift{
-      0%{
-        background-position:0%;
-      }
-      100%{
-        background-position:300%;
-      }
-    }
-
-    p{
-      margin-top:25px;
-      color:rgba(255,255,255,0.7);
-      font-size:1.1rem;
-      line-height:1.7;
-      max-width:700px;
-    }
-
-    .buttons{
-      display:flex;
-      gap:18px;
-      margin-top:35px;
-      flex-wrap:wrap;
-    }
-
-    button{
-      border:none;
-      cursor:pointer;
-
-      padding:16px 28px;
-
-      border-radius:16px;
-
-      font-size:1rem;
-      font-weight:700;
-
-      transition:0.3s ease;
-    }
-
-    .primary{
-      background:white;
-      color:black;
-    }
-
-    .primary:hover{
-      transform:translateY(-4px) scale(1.03);
-      box-shadow:0 10px 30px rgba(255,255,255,0.25);
-    }
-
-    .secondary{
-      background:rgba(255,255,255,0.08);
-      color:white;
-
-      border:1px solid rgba(255,255,255,0.1);
-    }
-
-    .secondary:hover{
-      transform:translateY(-4px) scale(1.03);
-
-      background:rgba(255,255,255,0.12);
-    }
-
-    .glow{
-      position:absolute;
-      width:600px;
-      height:600px;
-
-      background:radial-gradient(
-        circle,
-        rgba(0,255,255,0.15),
-        transparent 70%
-      );
-
-      filter:blur(60px);
-
-      z-index:0;
-
-      pointer-events:none;
-    }
-
-    .glow1{
-      top:-200px;
-      left:-200px;
-    }
-
-    .glow2{
-      bottom:-250px;
-      right:-250px;
-
-      background:radial-gradient(
-        circle,
-        rgba(255,0,255,0.15),
-        transparent 70%
-      );
-    }
-
-  </style>
+  .title{
+    position:absolute;
+    top:40px;
+    left:50%;
+    transform:translateX(-50%);
+    color:white;
+    font-family:Arial;
+    font-size:20px;
+    opacity:0.7;
+    z-index:10;
+  }
+</style>
 </head>
 
 <body>
 
-  <div class="glow glow1"></div>
-  <div class="glow glow2"></div>
+<div class="title">Move mouse — fluid inertial field</div>
+<canvas id="c"></canvas>
 
-  <canvas id="canvas"></canvas>
+<script>
+const canvas = document.getElementById("c");
+const ctx = canvas.getContext("2d");
 
-  <section class="hero">
+let w = canvas.width = window.innerWidth;
+let h = canvas.height = window.innerHeight;
 
-    <div class="small">
-      Interactive Experience
-    </div>
+const mouse = {
+  x: w/2,
+  y: h/2,
+  vx: 0,
+  vy: 0
+};
 
-    <h1>
-      Oscillating<br>
-      <span class="gradient">
-        Neural Field
-      </span>
-    </h1>
+let particles = [];
+const COUNT = Math.floor((w*h)/12000);
 
-    <p>
-      A reactive generative particle simulation influenced by
-      your mouse movement, animated wave distortion, and dynamic
-      neon color fields.
-    </p>
+class P {
+  constructor(){
+    this.x = Math.random()*w;
+    this.y = Math.random()*h;
+    this.baseX = this.x;
+    this.baseY = this.y;
 
-    <div class="buttons">
-      <button class="primary">
-        Explore
-      </button>
+    this.vx = 0;
+    this.vy = 0;
 
-      <button class="secondary">
-        Learn More
-      </button>
-    </div>
+    this.size = Math.random()*2+1;
+    this.phase = Math.random()*Math.PI*2;
+    this.speed = Math.random()*0.01 + 0.003;
+  }
 
-  </section>
+  update(t){
 
-  <script>
+    // direction to mouse
+    let dx = mouse.x - this.x;
+    let dy = mouse.y - this.y;
+    let dist = Math.sqrt(dx*dx + dy*dy) || 1;
 
-    const canvas = document.getElementById("canvas");
-    const ctx = canvas.getContext("2d");
+    let nx = dx / dist;
+    let ny = dy / dist;
 
-    let width = canvas.width = window.innerWidth;
-    let height = canvas.height = window.innerHeight;
+    // soft attraction (not snap)
+    let attract = Math.min(1, 150 / dist);
 
-    const mouse = {
-      x: width / 2,
-      y: height / 2,
-      radius: 220
-    };
+    // wave motion
+    let waveX = Math.sin(t*this.speed + this.phase + this.y*0.01)*20;
+    let waveY = Math.cos(t*this.speed + this.phase + this.x*0.01)*20;
 
-    let particles = [];
+    // ✨ key part: "wind from mouse movement"
+    this.vx += nx * attract * 0.4;
+    this.vy += ny * attract * 0.4;
 
-    const PARTICLE_COUNT =
-      Math.floor((width * height) / 12000);
+    // slight drag toward base wave field
+    this.vx += (this.baseX + waveX - this.x) * 0.01;
+    this.vy += (this.baseY + waveY - this.y) * 0.01;
 
-    class Particle {
+    // damping (deceleration to zero)
+    this.vx *= 0.90;
+    this.vy *= 0.90;
 
-      constructor() {
+    this.x += this.vx;
+    this.y += this.vy;
+  }
 
-        this.baseX = Math.random() * width;
-        this.baseY = Math.random() * height;
+  draw(t){
+    let hue = (t*0.02 + this.x*0.05 + this.y*0.05)%360;
 
-        this.x = this.baseX;
-        this.y = this.baseY;
+    ctx.beginPath();
+    ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
 
-        this.size = Math.random() * 2 + 1;
+    ctx.fillStyle = `hsla(${hue},100%,70%,0.9)`;
+    ctx.shadowColor = `hsla(${hue},100%,70%,0.8)`;
+    ctx.shadowBlur = 12;
 
-        this.phase = Math.random() * Math.PI * 2;
-
-        this.speed =
-          Math.random() * 0.008 + 0.002;
-
-      }
-
-      update(time) {
-  const dx = mouse.x - this.x;
-  const dy = mouse.y - this.y;
-
-  const dist = Math.sqrt(dx * dx + dy * dy);
-
-  // normalized direction to mouse
-  const dirX = dx / (dist || 1);
-  const dirY = dy / (dist || 1);
-
-  // how strong attraction is (soft falloff)
-  const attract = Math.min(1, 120 / (dist + 1));
-
-  // wave motion (kept from original)
-  const waveX =
-    Math.sin(time * this.speed + this.phase + this.y * 0.008) * 25;
-
-  const waveY =
-    Math.cos(time * this.speed + this.phase + this.x * 0.008) * 25;
-
-  // 🔥 THIS is the key: velocity with decay
-  if (!this.vx) this.vx = 0;
-  if (!this.vy) this.vy = 0;
-
-  // mouse direction influence (slow acceleration)
-  this.vx += dirX * attract * 0.6;
-  this.vy += dirY * attract * 0.6;
-
-  // damping = deceleration to zero
-  this.vx *= 0.92;
-  this.vy *= 0.92;
-
-  // combine motion
-  this.x += this.vx + (this.baseX + waveX - this.x) * 0.03;
-  this.y += this.vy + (this.baseY + waveY - this.y) * 0.03;
+    ctx.fill();
+  }
 }
 
+function init(){
+  particles = [];
+  for(let i=0;i<COUNT;i++) particles.push(new P());
+}
+init();
+
+function drawLines(t){
+  for(let i=0;i<particles.length;i++){
+    for(let j=i+1;j<particles.length;j++){
+
+      let a = particles[i];
+      let b = particles[j];
+
+      let dx = a.x-b.x;
+      let dy = a.y-b.y;
+      let d = Math.sqrt(dx*dx+dy*dy);
+
+      if(d < 100){
+        ctx.beginPath();
+        ctx.moveTo(a.x,a.y);
+        ctx.lineTo(b.x,b.y);
+
+        ctx.strokeStyle = `hsla(${(t*0.02+d)%360},100%,60%,${1-d/100})`;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
     }
+  }
+}
 
-    function initParticles() {
+function animate(t){
 
-      particles = [];
+  ctx.fillStyle = "rgba(0,0,0,0.08)";
+  ctx.fillRect(0,0,w,h);
 
-      for(let i = 0; i < PARTICLE_COUNT; i++){
+  drawLines(t);
 
-        particles.push(
-          new Particle()
-        );
+  for(let p of particles){
+    p.update(t);
+    p.draw(t);
+  }
 
-      }
+  requestAnimationFrame(animate);
+}
 
-    }
+animate(0);
 
-    initParticles();
+window.addEventListener("mousemove",(e)=>{
+  mouse.vx = e.clientX - mouse.x;
+  mouse.vy = e.clientY - mouse.y;
 
-    function drawConnections(time){
+  mouse.x = e.clientX;
+  mouse.y = e.clientY;
+});
 
-      for(let a = 0; a < particles.length; a++){
-
-        for(let b = a + 1; b < particles.length; b++){
-
-          const p1 = particles[a];
-          const p2 = particles[b];
-
-          const dx = p1.x - p2.x;
-          const dy = p1.y - p2.y;
-
-          const dist =
-            Math.sqrt(dx * dx + dy * dy);
-
-          if(dist < 110){
-
-            const opacity =
-              1 - dist / 110;
-
-            const hue =
-              (
-                time * 0.015 +
-                dist * 1.5
-              ) % 360;
-
-            ctx.beginPath();
-
-            ctx.moveTo(p1.x, p1.y);
-
-            ctx.lineTo(p2.x, p2.y);
-
-            ctx.strokeStyle =
-              `hsla(${hue},100%,65%,${opacity * 0.18})`;
-
-            ctx.lineWidth = 1;
-
-            ctx.stroke();
-
-          }
-
-        }
-
-      }
-
-    }
-
-    function animate(time){
-
-      ctx.fillStyle =
-        "rgba(0,0,0,0.08)";
-
-      ctx.fillRect(
-        0,
-        0,
-        width,
-        height
-      );
-
-      drawConnections(time);
-
-      particles.forEach((particle)=>{
-
-        particle.update(time);
-
-        particle.draw(time);
-
-      });
-
-      requestAnimationFrame(animate);
-
-    }
-
-    animate(0);
-
-    window.addEventListener(
-      "mousemove",
-      (e)=>{
-
-        mouse.x = e.clientX;
-        mouse.y = e.clientY;
-
-      }
-    );
-
-    window.addEventListener(
-      "touchmove",
-      (e)=>{
-
-        mouse.x =
-          e.touches[0].clientX;
-
-        mouse.y =
-          e.touches[0].clientY;
-
-      }
-    );
-
-    window.addEventListener(
-      "resize",
-      ()=>{
-
-        width =
-          canvas.width =
-          window.innerWidth;
-
-        height =
-          canvas.height =
-          window.innerHeight;
-
-        initParticles();
-
-      }
-    );
-
-  </script>
+window.addEventListener("resize",()=>{
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight;
+  init();
+});
+</script>
 
 </body>
 </html>
