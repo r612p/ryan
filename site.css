@@ -190,3 +190,41 @@ body::after {
   0%   { opacity: 0.55; }
   100% { opacity: 0.8; }
 }
+
+
+
+
+
+/* WATERMARK */
+.watermark{
+  position:fixed;
+  bottom:59px;
+  right:99px;
+  
+
+  color:rgba(255,255,255,0.35);
+  text-align:left;
+
+  user-select:none;
+  pointer-events:none;
+
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.wm-title{
+  font-size:25px; /* base */
+  font-weight:350;
+  position:relative;
+  letter-spacing: .68px;
+  
+}
+
+.wm-sub{
+  font-size:19px;
+  top:5spx;
+  right:2px;
+  
+  position:relative;
+  
+
+
