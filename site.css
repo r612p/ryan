@@ -1,0 +1,192 @@
+/* ===== The website that lives INSIDE the CRT screen =====
+   This document is embedded as an iframe (#crt-screen) by the main page and
+   sized/positioned over the canvas screen. The page scrolls inside the CRT;
+   the CRT look (gradient, inner glow, scanlines) is fixed to the viewport. */
+html {
+  height: 100%;
+  overflow-x: hidden;
+  scrollbar-width: none;            /* hide scrollbar, keep scrolling */
+}
+html::-webkit-scrollbar { width: 0; height: 0; }
+body {
+  margin: 0;
+  min-height: 100%;
+  box-sizing: border-box;
+  background: radial-gradient(120% 120% at 30% 20%, #0b1626 0%, #05080f 70%);
+  color: #e8eef7;
+  font-family: Georgia, "Times New Roman", serif;
+  overflow-x: hidden;
+  scrollbar-width: none;
+}
+body::-webkit-scrollbar { width: 0; height: 0; }
+
+/* fixed CRT inner glow over the viewport (stays put while scrolling) */
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 4;
+  box-shadow: inset 0 0 60px rgba(0,0,0,0.9);
+}
+
+.site-wrap { min-height: 100%; display: flex; flex-direction: column; }
+
+/* ---- top nav (left-based, but spread across the center) ---- */
+.site-nav {
+  display: flex; align-items: center; justify-content: flex-start; gap: 46px;
+  padding: 26px 56px; border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.site-nav a {
+  color: #b9c4d4; text-decoration: none; font-size: 22px; transition: color .2s;
+}
+.site-nav a:hover { color: #fff; }
+.site-nav .spacer { display: none; }
+
+/* ---- big outlined, horizontally "smooshed" Georgia titles ---- */
+.title {
+  margin: 0;
+  font-weight: 700;
+  font-size: clamp(40px, 8vw, 84px);
+  line-height: 1.04;
+  letter-spacing: 1px;
+  display: inline-block;
+  transform: scaleX(0.52);            /* squeeze the type horizontally */
+  transform-origin: left center;
+  color: transparent;                 /* hollow letters */
+  -webkit-text-stroke: 1.4px #eaf4ff;
+  text-stroke: 1.4px #eaf4ff;
+}
+.title span {
+  color: transparent;
+  -webkit-text-stroke-color: #eaf4ff;
+  text-stroke-color: #eaf4ff;
+}
+
+/* image titles (Hi, I'm Ryan! / My Projects) — big and left-aligned */
+.title-img {
+  display: block;
+  width: clamp(260px, 60%, 660px);
+  height: auto;
+  margin: 0 0 8px;
+}
+
+/* thin divider rule under each title */
+.rule {
+  border: 0;
+  border-top: 1px solid rgba(255,255,255,0.4);
+  margin: 4px 0 22px;
+  width: 88%;
+}
+
+/* ---- hero / bio ---- */
+.site-hero { padding: 30px 46px 16px; }
+.site-hero p {
+  margin: 0 0 18px;
+  max-width: 72ch;
+  color: #cdd6e2;
+  line-height: 1.7;
+  font-size: clamp(14px, 1.45vw, 18px);
+}
+
+/* ---- projects ---- */
+.projects { padding: 18px 46px 44px; }
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+  margin-top: 6px;
+}
+.project-card {
+  display: flex; flex-direction: column; justify-content: space-between;
+  min-height: 250px;
+  padding: 26px 18px 20px;
+  background: #171717;
+  border: 2px solid #9aa0a6;
+  border-radius: 6px;
+  transform: skewX(-8deg);            /* parallelogram card */
+}
+.card-text { transform: skewX(8deg); text-align: center; }  /* un-skew the text */
+.card-text h3 {
+  margin: 0 0 16px; font-size: 18px; font-weight: 700; color: #f1f4f9;
+  line-height: 1.25;
+}
+.card-text p { margin: 0; font-size: 15px; font-weight: 700; color: #e6ebf2; }
+
+.view-btn {
+  align-self: stretch;
+  margin-top: 18px;
+  padding: 12px 0;
+  border: 2px solid #9aa0a6;
+  border-radius: 6px;
+  color: #fff;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 15px;
+  cursor: pointer;
+  transition: filter .2s;
+}
+.view-btn span { display: inline-block; transform: skewX(8deg); }  /* upright label */
+.project-card:nth-child(odd)  .view-btn { background: #155e5e; }    /* teal */
+.project-card:nth-child(even) .view-btn { background: #1c4f8c; }    /* blue */
+.view-btn:hover { filter: brightness(1.18); }
+
+/* ---- footer ---- */
+.site-footer {
+  margin-top: auto;
+  padding: 14px 22px; font-size: 12px; color: #6b7686; text-align: center;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+/* ===== condensed outlined chrome (nav + footer) ===== */
+.site-logo, .site-nav a, .site-footer {
+  display: inline-block;
+  transform: scaleX(0.55);
+  transform-origin: center;
+  letter-spacing: 0.5px;
+}
+.site-logo, .site-nav a {
+  color: transparent;
+  -webkit-text-stroke: 0.6px #eaf4ff;
+  text-stroke: 0.6px #eaf4ff;
+}
+.site-logo { font-weight: 700; letter-spacing: 1px; font-size: 28px; margin-right: 26px; }
+
+/* ===== Glitchy CRT flicker ===== */
+.site-wrap {
+  animation: crtFlicker 2.6s steps(1, end) infinite,
+             crtGlitch 7s steps(1, end) infinite;
+}
+@keyframes crtFlicker {
+  0%, 100% { opacity: 1; }
+  8%  { opacity: 0.86; }
+  9%  { opacity: 1; }
+  40% { opacity: 0.94; }
+  41% { opacity: 1; }
+  72% { opacity: 0.8; }
+  73% { opacity: 1; }
+  88% { opacity: 0.9; }
+  89% { opacity: 1; }
+}
+@keyframes crtGlitch {
+  0%, 90%, 100% { transform: translateX(0) skewX(0); filter: none; }
+  91% { transform: translateX(-4px) skewX(-1.2deg); filter: contrast(1.4) hue-rotate(8deg); }
+  92% { transform: translateX(5px)  skewX(0.8deg);  filter: contrast(0.8); }
+  93% { transform: translateX(-2px); filter: none; }
+  94% { transform: translateX(3px)  skewX(-0.6deg); }
+  95% { transform: translateX(0); }
+}
+/* CRT scanlines, fixed over the viewport so they don't scroll with content */
+body::after {
+  content: "";
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  background:
+    repeating-linear-gradient(to bottom,
+      rgba(255,255,255,0.04) 0px, rgba(255,255,255,0.04) 1px,
+      rgba(0,0,0,0)        1px, rgba(0,0,0,0)        3px);
+  animation: crtScan 0.18s steps(2, end) infinite;
+}
+@keyframes crtScan {
+  0%   { opacity: 0.55; }
+  100% { opacity: 0.8; }
+}
