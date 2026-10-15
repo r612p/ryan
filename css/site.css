@@ -1,0 +1,101 @@
+  :root {
+    --sky: #f1f4f7;                    /* cool off-white behind the grid */
+    --grid: rgba(60, 76, 98, 0.075);
+    --page: #ffffff;                   /* rest of the site — matches the snow */
+    --ink: #14171b;
+    --muted: #6b7684;
+    --ease: cubic-bezier(.22, 1, .36, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--page);
+    color: var(--ink);
+    font-family: "Inter Tight", "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+  }
+
+  /* ---------------- Header ---------------- */
+  .stage {
+    position: relative;
+    height: 100svh;
+    min-height: 560px;
+    overflow: clip;
+    isolation: isolate;
+    background-color: var(--sky);
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 44px 44px;
+    background-position: center top;
+  }
+  /* grid softly washes out toward the horizon */
+  .stage::before {
+    content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    background: linear-gradient(to bottom, rgba(241,244,247,0) 25%, rgba(246,248,250,.9) 72%);
+  }
+
+  /* Landscape: fades in from the bottom, gone by the top */
+  .scene {
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    -webkit-mask-image: linear-gradient(to top, #000 0%, #000 45%, rgba(0,0,0,.6) 64%, rgba(0,0,0,.2) 80%, transparent 94%);
+            mask-image: linear-gradient(to top, #000 0%, #000 45%, rgba(0,0,0,.6) 64%, rgba(0,0,0,.2) 80%, transparent 94%);
+    opacity: 0;
+    transition: opacity 1.6s ease;
+  }
+  .scene.ready { opacity: 1; }
+  .scene canvas, #snow { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+  /* soft light behind the headline so branches never fight the text */
+  .veil {
+    position: absolute; inset: 0; z-index: 2; pointer-events: none;
+    background: radial-gradient(ellipse 52% 26% at 50% 42%, rgba(241,244,247,.78), rgba(241,244,247,0) 72%);
+  }
+  #snow { z-index: 3; pointer-events: none; }
+
+  .hero {
+    position: absolute; z-index: 4;
+    top: 42%; left: 50%;
+    width: min(92vw, 1100px);
+    transform: translate(-50%, -50%);
+    text-align: center;
+    will-change: transform, opacity;
+  }
+  .hero small {
+    display: block; margin-bottom: 18px;
+    font-size: 12px; font-weight: 500; letter-spacing: .32em; text-transform: uppercase;
+    color: var(--muted);
+    animation: rise .9s var(--ease) .2s both;
+  }
+  .hero h1 {
+    font-size: clamp(42px, 9vw, 144px);
+    line-height: .94; letter-spacing: -0.04em; font-weight: 800;
+  }
+  .hero h1 span { display: block; animation: rise 1.1s var(--ease) .35s both; }
+  .hero h1 span + span { animation-delay: .5s; }
+
+  .cue {
+    position: absolute; z-index: 4; left: 50%; bottom: max(18px, env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    font-size: 11px; font-weight: 700; letter-spacing: .32em; color: #4b5560;
+    animation: fade 1s ease 1.4s both;
+  }
+  .cue i { width: 1px; height: 30px; background: #4b5560; transform-origin: top; animation: drip 2s var(--ease) 2s infinite; }
+
+  .grain {
+    position: absolute; inset: 0; z-index: 5; pointer-events: none;
+    opacity: .3; mix-blend-mode: soft-light;           /* soft-light leaves pure white untouched */
+    -webkit-mask-image: linear-gradient(#000 55%, transparent 90%);
+            mask-image: linear-gradient(#000 55%, transparent 90%);
+  }
+
+  @keyframes rise { from { opacity: 0; transform: translateY(26px); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
+  @keyframes fade { from { opacity: 0; } }
+  @keyframes drip { 0% { transform: scaleY(0); opacity: 1; } 55% { transform: scaleY(1); opacity: 1; } 100% { transform: scaleY(1); opacity: 0; } }
+
+  @media (max-width: 600px) {
+    .hero { top: 40%; }
+    .hero small { font-size: 10px; margin-bottom: 14px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }

@@ -1,16 +1,701 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Starry Night Valley</title>
-  <link rel="stylesheet" href="styles.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ryan Pham</title>
+<meta name="description" content="Ryan Pham — Computer Engineering at George Mason University. PCBs, embedded firmware and full-stack apps.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/site.css">
+<link rel="stylesheet" href="css/stack.css">
+<link rel="stylesheet" href="css/portfolio.css">
+<link rel="stylesheet" href="css/teardown.css">
 </head>
 <body>
-<!-- The website itself lives in its own page (site.html) and is shown inside
-     the CRT screen, positioned over the canvas each frame by sketch.js. -->
-<iframe id="crt-screen" src="site.html" title="Ryan P"></iframe>
-<script src="sketch.js"></script>
+<!-- social logos (from img/social), drawn on the contact cards with <use> -->
+<svg class="sprite" aria-hidden="true" width="0" height="0" style="position:absolute">
+  <symbol id="logo-email" viewBox="0 0 24 24"><rect x="2.75" y="4.75" width="18.5" height="14.5" rx="2.25" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M3.6 6.6 12 13l8.4-6.4" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="logo-linkedin" viewBox="0 0 64.79 64.79"><path d="M72.865 61.1094a1.2 1.2 0 001.21-1.269c0-.9-.543-1.33-1.657-1.33h-1.8v4.712h.677v-2.054h.832l.019.025 1.291 2.029h.724l-1.389-2.1zm-.783-.472h-.785v-1.593h.995c.514 0 1.1.084 1.1.757 0 .774-.593.836-1.314.836m-16.873-5.433h-9.6v-15.034c0-3.585-.064-8.2-4.993-8.2-5 0-5.765 3.906-5.765 7.939v15.294h-9.6v-30.916h9.216v4.225h.129a10.1 10.1 0 019.093-4.994c9.73 0 11.524 6.4 11.524 14.726zm-40.79-35.143a5.571 5.571 0 115.57-5.572 5.571 5.571 0 01-5.57 5.572m4.8 35.143h-9.61v-30.917h9.61zm40.776-55.2H4.781A4.728 4.728 0 000 4.6744v55.439a4.731 4.731 0 004.781 4.675h55.21a4.741 4.741 0 004.8-4.675V4.6704a4.738 4.738 0 00-4.8-4.67"/></symbol>
+  <symbol id="logo-github" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></symbol>
+  <symbol id="logo-instagram" viewBox="0 0 24 24"><path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></symbol>
+</svg>
+
+<!-- ============================ TITLE PAGE ============================ -->
+<section class="stage" id="top">
+  <div class="scene"><canvas id="scene"></canvas></div>
+  <div class="veil"></div>
+  <canvas id="snow"></canvas>
+
+  <header class="topnav">
+    <a class="mark" href="#top" aria-label="Ryan Pham, home">RP</a>
+    <nav aria-label="Sections">
+      <a href="#about">About</a>
+      <a href="#qube">Qube</a>
+      <a href="#envoy">Envoy</a>
+      <a href="#projects">Projects</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <small>Computer Engineering · George Mason University</small>
+    <h1><span>Ryan Pham</span></h1>
+    <p class="tagline">Engineer and designer working on the edge between hardware and software.</p>
+  </div>
+  <div class="cue">SCROLL<i></i></div>
+  <div class="grain"></div>
+</section>
+
+<!-- ============================ ABOUT ============================ -->
+<section class="sec" id="about">
+  <div class="about">
+    <div class="about-side" data-rg>
+      <span class="kicker" data-r>About</span>
+      <h2 data-r>Hardware, software, and the edge between.</h2>
+      <dl class="facts" data-r>
+        <div><dt>Studying</dt><dd>Computer Engineering, George Mason University</dd></div>
+        <div><dt>Builds</dt><dd>PCBs in KiCad, ESP32 firmware, full-stack apps</dd></div>
+        <div><dt>Scouting</dt><dd>Eagle Scout, National Youth Leadership Training</dd></div>
+        <div><dt>Off hours</dt><dd>Guitar, band concerts, live AV</dd></div>
+        <div><dt>Toolbox</dt><dd class="toolbox"><span>KiCad</span><span>ESP32</span><span>MIDI</span><span>DMX</span><span>Java</span><span>Spring Boot</span><span>Docker</span><span>HTML/CSS/JS</span></dd></div>
+      </dl>
+    </div>
+
+    <div class="about-copy" data-rg>
+      <p data-r>I'm a Computer Engineering student at George Mason University and a designer who works on the edge between hardware and software. I fabricate PCBs in KiCad, write embedded firmware for ESP32-based MIDI controllers and DMX light rigs, and build full-stack apps. My process for innovation starts with a problem I encounter, whether it is <a href="#envoy">a guitar FX keychain I could take anywhere</a>, <a href="#qube">a program to visualize and simulate quantum mechanics</a>, or a homelab-hosted AI assistant.</p>
+      <p data-r>I'm also an Eagle Scout who is devoted to serving my community through programs such as National Youth Leadership Training, a weeklong camp that is youth-led, designed to teach leadership to high-achieving Scouts.</p>
+      <p data-r>When I'm not coding or camping, you can find me practicing guitar for my next band concert or planning the logistics and AV for it. I like building things that help contribute to the human experience and helping people find themselves, whether it is through music, leadership, or technology.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ QUBE: why it exists ============================ -->
+<section class="sec qube-intro" id="qube">
+  <div class="sec-head" data-rg>
+    <div>
+      <span class="kicker" data-r>Featured software · Qube</span>
+      <h2 data-r>Quantum computing<br>you can poke at.</h2>
+    </div>
+    <p data-r>Quantum mechanics is almost impossible to picture. Qube is the student-led project I co-founded to change that: a quantum computer simulator that runs in the browser.</p>
+  </div>
+  <div class="why" data-rg>
+    <div data-r><span class="n">01 · The problem</span><h3>Taught as equations</h3><p>Qubits, superposition and measurement usually show up as math on a whiteboard. Most people never get to try one.</p></div>
+    <div data-r><span class="n">02 · The fix</span><h3>Circuits you can run</h3><p>Drag X, H, CNOT, Toffoli and SWAP gates onto a grid, run it, and watch a qubit collapse to 0 or 1. Shor's and Grover's run too.</p></div>
+    <div data-r><span class="n">03 · The people</span><h3>Built for students</h3><p>We've run STEM workshops at community centers where students build circuits with it. Here's how the whole thing works.</p></div>
+  </div>
+</section>
+
+<!-- ============================ QUBE FULL STACK (3D) ============================ -->
+<section class="stack" id="stack">
+  <div class="stack-stage">
+
+    <article class="caption" aria-live="polite">
+      <span class="step">01/11</span>
+      <span class="k">Mr. Qube</span>
+      <h3>This is Qube.</h3>
+      <p>A quantum computer simulator, packed into one cube. Scroll to take it apart.</p>
+      <div class="chips"></div>
+    </article>
+
+    <nav class="rail" aria-label="Qube stack layers"></nav>
+    <div class="drag-hint"><b></b>Drag to rotate</div>
+
+    <div class="viewport" aria-hidden="true">
+      <div class="rig">
+        <div class="cam">
+          <div class="world">
+
+            <!-- 01 · WEB -->
+            <div class="layer" data-num="01" data-name="Web interface" data-meta="html · css · js">
+              <div class="top face">
+                <div class="tag"><b>01</b>Web interface</div>
+                <div class="status"><i></i>online</div>
+                <div class="browser">
+                  <div class="b-bar"><i></i><i></i><i></i><span class="b-url">qube / simulator.html</span></div>
+                  <div class="b-nav"><span>Home</span><span>Research</span><span class="on">Simulator</span><span>Dashboard</span><span>Donate</span></div>
+                  <div class="b-pal"><span>X</span><span>Y</span><span>Z</span><span>H</span><span>S</span><span>T</span></div>
+                  <div class="circuit">
+                    <span class="q" style="top:18px">q0</span><span class="w" style="top:18px"></span>
+                    <span class="q" style="top:46px">q1</span><span class="w" style="top:46px"></span>
+                    <span class="q" style="top:74px">q2</span><span class="w" style="top:74px"></span>
+                    <span class="g" style="left:48px;top:18px">H</span>
+                    <span class="g" style="left:48px;top:74px">T</span>
+                    <span class="ctl" style="left:86px;top:18px"></span>
+                    <span class="cx" style="left:86px;top:18px;height:28px"></span>
+                    <span class="g blue" style="left:86px;top:46px">X</span>
+                    <span class="g" style="left:124px;top:46px">Z</span>
+                    <span class="g" style="left:162px;top:74px">H</span>
+                    <span class="g" style="left:162px;top:18px">S</span>
+                    <span class="g blue" style="left:206px;top:18px">M</span>
+                    <span class="g blue" style="left:206px;top:46px">M</span>
+                    <span class="g blue" style="left:206px;top:74px">M</span>
+                  </div>
+                  <div class="b-foot"><span class="run">RUN</span><span class="result">–</span><span class="log">ready</span></div>
+                </div>
+                <div class="port"><i>↓</i><i>↑</i></div>
+              </div>
+            </div>
+
+            <!-- 02 · NETWORK -->
+            <div class="layer" data-num="02" data-name="HTTPS · REST" data-meta="fetch → json">
+              <div class="top face">
+                <div class="tag"><b>02</b>HTTPS · REST API</div>
+                <div class="status"><i></i>cors on</div>
+                <div class="endpoints">
+                  <div class="hl"></div>
+                  <div class="row"><b>POST</b>/create-qubit</div>
+                  <div class="row"><b>POST</b>/execute</div>
+                  <div class="row"><b>POST</b>/execute-circuit</div>
+                  <div class="row"><b>POST</b>/simulate-shor</div>
+                  <div class="row"><b>POST</b>/simulate-grover</div>
+                  <div class="row"><b>POST</b>/uncollapse-qubit</div>
+                  <div class="row"><b class="get">GET</b>/qubit/{id}</div>
+                </div>
+                <div class="net-foot"><span>JSON in</span><span>text out</span><span>@CrossOrigin</span></div>
+                <div class="port"><i>↓</i><i>↑</i></div>
+              </div>
+            </div>
+
+            <!-- 03 · RENDER -->
+            <div class="layer" data-num="03" data-name="Render" data-meta="web service">
+              <div class="top face">
+                <div class="tag"><b>03</b>Render · cloud host</div>
+                <div class="status"><i></i>live</div>
+                <div class="rack">
+                  <div class="unit"><span class="id">web</span><span class="leds"><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="vent"></span></div>
+                  <div class="unit"><span class="id">tls</span><span class="leds"><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="vent"></span></div>
+                  <div class="unit"><span class="id">log</span><span class="leds"><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="vent"></span></div>
+                </div>
+                <div class="url">qube-simulator.onrender.com
+                  <small>Docker web service. Free plan: it naps when idle, and the first request wakes it up.</small>
+                </div>
+                <div class="zzz"><span>z</span><span>z</span><span>Z</span></div>
+                <div class="port"><i>↓</i><i>↑</i></div>
+              </div>
+            </div>
+
+            <!-- 04 · DOCKER -->
+            <div class="layer" data-num="04" data-name="Docker" data-meta="temurin 17 · :8080">
+              <div class="top face">
+                <div class="tag"><b>04</b>Docker · two stages</div>
+                <div class="container">
+                  <div class="stagebox s1">
+                    <span class="lbl">Stage 1 · build</span>
+                    <div class="img">maven:3.9.4-eclipse-temurin-17</div>
+                    <div class="cmd">RUN mvn clean package -DskipTests</div>
+                  </div>
+                  <div class="arrow-down"></div>
+                  <span class="jar jar-hop" style="left:calc(50% + 10px);top:88px">app.jar</span>
+                  <div class="stagebox s2">
+                    <span class="lbl">Stage 2 · run</span>
+                    <div class="img">eclipse-temurin:17-jdk-alpine</div>
+                    <div class="cmd">ENTRYPOINT java -jar app.jar</div>
+                  </div>
+                </div>
+                <div class="portlight"><i></i>EXPOSE 8080</div>
+                <div class="port"><i>↓</i><i>↑</i></div>
+                <div class="port build"><i>⇡</i></div>
+              </div>
+            </div>
+
+            <!-- 05 · SPRING BOOT -->
+            <div class="layer" data-num="05" data-name="Spring Boot" data-meta="3.5.3 · java 17">
+              <div class="top face">
+                <div class="tag"><b>05</b>Spring Boot</div>
+                <div class="gears-l"></div>
+                <div class="code">
+                  <div class="an">@SpringBootApplication</div>
+                  <div class="cl">QuantumMachine…App</div>
+                  <div class="an" style="margin-top:6px">@RestController</div>
+                  <div class="an">@CrossOrigin</div>
+                  <div class="cl">SimulatorController</div>
+                  <div class="ep">@PostMapping("/execute")</div>
+                </div>
+                <div class="map">
+                  <span class="lbl">ConcurrentHashMap&lt;String, Qubit&gt;</span>
+                  <div class="cells"><i>q0</i><i>q1</i><i>q2</i><i>bell</i><i class="empty">·</i><i class="empty">·</i></div>
+                </div>
+                <div class="port"><i>↓</i><i>↑</i></div>
+              </div>
+            </div>
+
+            <!-- 06 · ENGINE -->
+            <div class="layer" data-num="06" data-name="Quantum engine" data-meta="qubit · gates">
+              <div class="top face">
+                <div class="tag"><b>06</b>Quantum engine</div>
+                <svg class="bloch" viewBox="0 0 172 172">
+                  <circle cx="86" cy="86" r="66" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.2"/>
+                  <ellipse cx="86" cy="86" rx="66" ry="20" fill="none" stroke="rgba(255,255,255,.28)" stroke-width="1" stroke-dasharray="3 4"/>
+                  <path id="eq-path" d="M 20 86 A 66 20 0 1 0 152 86 A 66 20 0 1 0 20 86" fill="none" stroke="none"/>
+                  <line x1="86" y1="16" x2="86" y2="156" stroke="rgba(255,255,255,.22)"/>
+                  <text x="92" y="14" fill="#8b95a3" font-size="10" font-family="JetBrains Mono, monospace">|0⟩</text>
+                  <text x="92" y="168" fill="#8b95a3" font-size="10" font-family="JetBrains Mono, monospace">|1⟩</text>
+                  <g class="bloch-vec" style="transform-box:view-box;transform-origin:86px 86px">
+                    <line x1="86" y1="86" x2="86" y2="30" stroke="#5b8cff" stroke-width="2.5" stroke-linecap="round"/>
+                    <circle cx="86" cy="28" r="5" fill="#5b8cff"/>
+                  </g>
+                  <circle class="eq-dot" r="3.5" fill="#fff"/>
+                  <circle cx="86" cy="86" r="3" fill="#fff"/>
+                </svg>
+                <div class="psi">ψ = α|0⟩ + β|1⟩
+                  <small>Qubit = two complexNumber amplitudes. Gates rotate them.</small>
+                </div>
+                <div class="measure"><span class="lbl">measure</span><b class="m-out">0</b></div>
+                <div class="algos"><span>X Y Z H</span><span>S T S† T†</span><span>CX CY CZ</span><span>Toffoli</span><span>SWAP</span><span>MultiQubit</span><span>Shor · gcd</span><span>Grover</span></div>
+                <div class="gears-e"></div>
+                <div class="port"><i>↓</i><i>↑</i></div>
+              </div>
+            </div>
+
+            <!-- 07 · MAVEN -->
+            <div class="layer" data-num="07" data-name="Maven" data-meta="mvnw · pom.xml">
+              <div class="top face">
+                <div class="tag"><b>07</b>Maven build</div>
+                <div class="pom">
+                  <div class="t">pom.xml</div>
+                  <div>parent <b>spring-boot-starter-parent</b></div>
+                  <div>version <b>3.5.3</b></div>
+                  <div>java.version <b>17</b></div>
+                  <div>+ spring-boot-starter-web</div>
+                  <div>+ spring-boot-starter-test</div>
+                  <div>plugin spring-boot-maven</div>
+                </div>
+                <div class="gears-m"></div>
+                <div class="cmdline"><span>$</span> ./mvnw clean package -DskipTests<i class="caret"></i></div>
+                <div class="belt">
+                  <span class="file">Qubit.java</span>
+                  <span class="file">SimulatorController.java</span>
+                  <span class="file">AI.java</span>
+                  <span class="file">application.properties</span>
+                </div>
+                <span class="jar jar-out">simulator-0.0.1-SNAPSHOT.jar</span>
+                <div class="port build"><i>⇡</i></div>
+              </div>
+            </div>
+
+            <!-- satellites -->
+            <div class="sat" id="sat-auth" data-name="Firebase Auth" data-meta="google">
+              <div class="top face">
+                <div class="tag"><b>+</b>sign-in</div>
+                <svg class="key" viewBox="0 0 26 26"><circle cx="8" cy="13" r="5" fill="none" stroke="#fff" stroke-width="2"/><path d="M13 13h11M20 13v4M23 13v3" stroke="#fff" stroke-width="2" fill="none"/></svg>
+                <h4>Firebase Auth</h4>
+                <p>Google sign-in popup, right in the browser. login.html · dashboard.html</p>
+              </div>
+            </div>
+            <div class="sat" id="sat-postman" data-name="Postman" data-meta="api tests">
+              <div class="top face">
+                <div class="tag"><b>+</b>testing</div>
+                <h4>Postman</h4>
+                <div class="reqs">
+                  <div>POST /create-qubit <b>200</b></div>
+                  <div>POST /execute <b>200</b></div>
+                  <div>GET /qubit/q0 <b>200</b></div>
+                </div>
+              </div>
+            </div>
+            <div class="sat" id="sat-git" data-name="GitHub" data-meta="git push">
+              <div class="top face">
+                <div class="tag"><b>+</b>deploy</div>
+                <h4>GitHub</h4>
+                <div class="commits"><i></i><u></u><i></i><u></u><i></i><u></u><i class="new"></i></div>
+                <p>git push → Render builds the Dockerfile and ships it.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ ENVOY (featured hardware → the teardown, right here) ============================ -->
+<section class="sec envoy-intro" id="envoy">
+  <div class="sec-head" data-rg>
+    <div>
+      <span class="kicker" data-r>Featured hardware</span>
+      <h2 data-r>The guitar FX keychain,<br>built for real.</h2>
+    </div>
+    <p data-r>Envoy started as a problem: I wanted my tone controls in my pocket. Now it's a board, an enclosure and a launch date.</p>
+  </div>
+</section>
+
+<!-- the board arrives as a black card with its blueprint, opens to full screen and comes apart as you scroll -->
+<section class="td" id="teardown" aria-label="Envoy V1 teardown">
+  <div class="td-stage">
+    <div class="td-frame" id="td-frame">
+      <canvas id="gl" aria-hidden="true"></canvas>
+      <div class="paper-grid" id="paper-grid" aria-hidden="true"></div>
+      <div class="bp-overlay" id="bp-overlay" aria-hidden="true">
+        <svg class="bp" viewBox="-37.2 -72.45 77.9 127.9" role="img" aria-label="Envoy V1 seen from above, to scale: ESP32 DevKit, two DIP-16 chips, three knobs, a master button and four LEDs inside a 55.9 by 106.9 mm enclosure.">
+      <g class="bp-lines">
+      <rect class="enc" x="-27.7" y="-49.45" width="55.4" height="98.9" rx="4"/>
+      <path class="enc" d="M-27.7 -45.45 V-53.45 Q-27.7 -57.45 -23.7 -57.45 H-19.2 Q-15.2 -57.45 -15.2 -53.45 V-49.45"/>
+      <circle class="enc" cx="-21.7" cy="-52.95" r="2.2"/>
+      <rect class="board" x="-25.22" y="-45.5" width="50.43" height="91" rx="1"/>
+      <rect class="part" x="-23.07" y="-47.73" width="28.2" height="51.8"/>
+      <rect class="part" x="-17.97" y="-22.06" width="18" height="25.5"/>
+      <rect class="part soft" x="-16.87" y="-21.06" width="15.8" height="17.6"/>
+      <rect class="part" x="-12.92" y="-48.38" width="7.9" height="5.57"/>
+      <rect class="part soft" x="-11.37" y="-40.13" width="5" height="5"/>
+      <circle class="pin" cx="-21.3" cy="-37.16" r="0.5"/>
+      <circle class="pin" cx="-21.3" cy="-34.62" r="0.5"/>
+      <circle class="pin" cx="-21.3" cy="-32.08" r="0.5"/>
+      <circle class="pin" cx="-21.3" cy="-29.54" r="0.5"/>
+      <circle class="pin" cx="-21.3" cy="-27" r="0.5"/>
+      <circle class="pin" cx="-21.3" cy="-24.46" r="0.5"/>
+      <circle class="pin" cx="-21.3" cy="-21.92" r="0.5"/>
+      <circle class="pin" cx="-21.3" cy="-19.38" r="0.5"/>
+      <circle class="pin" cx="-21.3" cy="-16.84" r="0.5"/>
+      <circle class="pin" cx="-21.3" cy="-14.3" r="0.5"/>
+      <circle class="pin" cx="-21.3" cy="-11.76" r="0.5"/>
+      <circle class="pin" cx="-21.3" cy="-9.22" r="0.5"/>
+      <circle class="pin" cx="-21.3" cy="-6.68" r="0.5"/>
+      <circle class="pin" cx="-21.3" cy="-4.14" r="0.5"/>
+      <circle class="pin" cx="-21.3" cy="-1.6" r="0.5"/>
+      <circle class="pin" cx="3.36" cy="-37.16" r="0.5"/>
+      <circle class="pin" cx="3.36" cy="-34.62" r="0.5"/>
+      <circle class="pin" cx="3.36" cy="-32.08" r="0.5"/>
+      <circle class="pin" cx="3.36" cy="-29.54" r="0.5"/>
+      <circle class="pin" cx="3.36" cy="-27" r="0.5"/>
+      <circle class="pin" cx="3.36" cy="-24.46" r="0.5"/>
+      <circle class="pin" cx="3.36" cy="-21.92" r="0.5"/>
+      <circle class="pin" cx="3.36" cy="-19.38" r="0.5"/>
+      <circle class="pin" cx="3.36" cy="-16.84" r="0.5"/>
+      <circle class="pin" cx="3.36" cy="-14.3" r="0.5"/>
+      <circle class="pin" cx="3.36" cy="-11.76" r="0.5"/>
+      <circle class="pin" cx="3.36" cy="-9.22" r="0.5"/>
+      <circle class="pin" cx="3.36" cy="-6.68" r="0.5"/>
+      <circle class="pin" cx="3.36" cy="-4.14" r="0.5"/>
+      <circle class="pin" cx="3.36" cy="-1.6" r="0.5"/>
+      <rect class="part" x="15.86" y="-9.23" width="5.47" height="19.18" rx="0.4"/>
+      <circle class="pin" cx="15.08" cy="-8.27" r="0.45"/>
+      <circle class="pin" cx="15.08" cy="-6" r="0.45"/>
+      <circle class="pin" cx="15.08" cy="-3.46" r="0.45"/>
+      <circle class="pin" cx="15.08" cy="-0.92" r="0.45"/>
+      <circle class="pin" cx="15.08" cy="1.62" r="0.45"/>
+      <circle class="pin" cx="15.08" cy="4.16" r="0.45"/>
+      <circle class="pin" cx="15.08" cy="6.7" r="0.45"/>
+      <circle class="pin" cx="15.08" cy="8.98" r="0.45"/>
+      <circle class="pin" cx="22.11" cy="-8.27" r="0.45"/>
+      <circle class="pin" cx="22.11" cy="-6" r="0.45"/>
+      <circle class="pin" cx="22.11" cy="-3.46" r="0.45"/>
+      <circle class="pin" cx="22.11" cy="-0.92" r="0.45"/>
+      <circle class="pin" cx="22.11" cy="1.62" r="0.45"/>
+      <circle class="pin" cx="22.11" cy="4.16" r="0.45"/>
+      <circle class="pin" cx="22.11" cy="6.7" r="0.45"/>
+      <circle class="pin" cx="22.11" cy="8.98" r="0.45"/>
+      <rect class="part" x="-22.53" y="11.46" width="19.18" height="5.47" rx="0.4"/>
+      <circle class="pin" cx="-21.57" cy="10.68" r="0.45"/>
+      <circle class="pin" cx="-19.3" cy="10.68" r="0.45"/>
+      <circle class="pin" cx="-16.76" cy="10.68" r="0.45"/>
+      <circle class="pin" cx="-14.22" cy="10.68" r="0.45"/>
+      <circle class="pin" cx="-11.68" cy="10.68" r="0.45"/>
+      <circle class="pin" cx="-9.14" cy="10.68" r="0.45"/>
+      <circle class="pin" cx="-6.6" cy="10.68" r="0.45"/>
+      <circle class="pin" cx="-4.32" cy="10.68" r="0.45"/>
+      <circle class="pin" cx="-21.57" cy="17.71" r="0.45"/>
+      <circle class="pin" cx="-19.3" cy="17.71" r="0.45"/>
+      <circle class="pin" cx="-16.76" cy="17.71" r="0.45"/>
+      <circle class="pin" cx="-14.22" cy="17.71" r="0.45"/>
+      <circle class="pin" cx="-11.68" cy="17.71" r="0.45"/>
+      <circle class="pin" cx="-9.14" cy="17.71" r="0.45"/>
+      <circle class="pin" cx="-6.6" cy="17.71" r="0.45"/>
+      <circle class="pin" cx="-4.32" cy="17.71" r="0.45"/>
+      <rect class="part soft" x="15.04" y="11.94" width="2.49" height="6.62" rx="1.24"/>
+      <rect class="part soft" x="10.54" y="12.95" width="2.49" height="6.62" rx="1.24"/>
+      <rect class="part soft" x="-10.77" y="38.76" width="6.62" height="2.49" rx="1.24"/>
+      <rect class="part soft" x="18.54" y="-18.05" width="2.49" height="6.62" rx="1.24"/>
+      <rect class="part soft" x="14.04" y="-18.05" width="2.49" height="6.62" rx="1.24"/>
+      <rect class="part soft" x="9.54" y="-18.05" width="2.49" height="6.62" rx="1.24"/>
+      <rect class="part soft" x="8.04" y="4.44" width="2.49" height="6.62" rx="1.24"/>
+      <rect class="part soft" x="9.54" y="-27.25" width="2.49" height="6.62" rx="1.24"/>
+      <rect class="part soft" x="10.04" y="-7.06" width="2.49" height="6.62" rx="1.24"/>
+      <rect class="part soft" x="5.23" y="40.26" width="6.62" height="2.49" rx="1.24"/>
+      <rect class="part soft" x="6.04" y="-7.06" width="2.49" height="6.62" rx="1.24"/>
+      <rect class="part soft" x="20.04" y="11.94" width="2.49" height="6.62" rx="1.24"/>
+      <rect class="part soft" x="8.82" y="-41.5" width="13.94" height="12" rx="0.6"/>
+      <circle class="part" cx="15.78" cy="-35.5" r="6"/>
+      <circle class="part soft" cx="15.78" cy="-35.5" r="4.32"/>
+      <rect class="part soft" x="-23.21" y="21.3" width="13.99" height="14.9" rx="0.6"/>
+      <rect class="part soft" x="-6.96" y="21.3" width="13.99" height="14.9" rx="0.6"/>
+      <rect class="part soft" x="8.79" y="21.3" width="13.99" height="14.9" rx="0.6"/>
+      </g>
+      <g class="knob" data-id="K1"><circle class="part" cx="-16.21" cy="28.49" r="6.8"/><path class="part soft" d="M-10.37 28.49 L-9.41 28.49 M-10.57 30 L-9.65 30.25 M-11.15 31.41 L-10.33 31.89 M-12.08 32.62 L-11.41 33.3 M-13.29 33.55 L-12.81 34.38 M-14.7 34.14 L-14.46 35.06 M-16.21 34.34 L-16.21 35.29 M-17.73 34.14 L-17.97 35.06 M-19.14 33.55 L-19.61 34.38 M-20.35 32.62 L-21.02 33.3 M-21.28 31.41 L-22.1 31.89 M-21.86 30 L-22.78 30.25 M-22.06 28.49 L-23.02 28.49 M-21.86 26.97 L-22.78 26.73 M-21.28 25.56 L-22.1 25.09 M-20.35 24.35 L-21.02 23.68 M-19.14 23.42 L-19.62 22.6 M-17.73 22.84 L-17.97 21.92 M-16.21 22.64 L-16.21 21.69 M-14.7 22.84 L-14.46 21.92 M-13.29 23.42 L-12.81 22.6 M-12.08 24.35 L-11.41 23.68 M-11.15 25.56 L-10.33 25.09 M-10.57 26.97 L-9.65 26.73"/><circle class="part soft" cx="-16.21" cy="28.49" r="3.06"/><path class="mark" d="M-16.21 27.13 V23.05"/></g>
+      <g class="knob" data-id="K2"><circle class="part" cx="0.04" cy="28.49" r="6.8"/><path class="part soft" d="M5.88 28.49 L6.83 28.49 M5.68 30 L6.6 30.25 M5.1 31.41 L5.92 31.89 M4.17 32.62 L4.84 33.3 M2.96 33.55 L3.44 34.38 M1.55 34.14 L1.79 35.06 M0.04 34.34 L0.04 35.29 M-1.48 34.14 L-1.72 35.06 M-2.89 33.55 L-3.36 34.38 M-4.1 32.62 L-4.77 33.3 M-5.03 31.41 L-5.85 31.89 M-5.61 30 L-6.53 30.25 M-5.81 28.49 L-6.76 28.49 M-5.61 26.97 L-6.53 26.73 M-5.03 25.56 L-5.85 25.09 M-4.1 24.35 L-4.77 23.68 M-2.89 23.42 L-3.37 22.6 M-1.48 22.84 L-1.72 21.92 M0.03 22.64 L0.03 21.69 M1.55 22.84 L1.79 21.92 M2.96 23.42 L3.44 22.6 M4.17 24.35 L4.84 23.68 M5.1 25.56 L5.92 25.09 M5.68 26.97 L6.6 26.73"/><circle class="part soft" cx="0.04" cy="28.49" r="3.06"/><path class="mark" d="M0.04 27.13 V23.05"/></g>
+      <g class="knob" data-id="K3"><circle class="part" cx="15.79" cy="28.49" r="6.8"/><path class="part soft" d="M21.63 28.49 L22.59 28.49 M21.43 30 L22.35 30.25 M20.85 31.41 L21.67 31.89 M19.92 32.62 L20.59 33.3 M18.71 33.55 L19.19 34.38 M17.3 34.14 L17.54 35.06 M15.79 34.34 L15.79 35.29 M14.27 34.14 L14.03 35.06 M12.86 33.55 L12.39 34.38 M11.65 32.62 L10.98 33.3 M10.72 31.41 L9.9 31.89 M10.14 30 L9.22 30.25 M9.94 28.49 L8.98 28.49 M10.14 26.97 L9.22 26.73 M10.72 25.56 L9.9 25.09 M11.65 24.35 L10.98 23.68 M12.86 23.42 L12.38 22.6 M14.27 22.84 L14.03 21.92 M15.78 22.64 L15.78 21.69 M17.3 22.84 L17.54 21.92 M18.71 23.42 L19.19 22.6 M19.92 24.35 L20.59 23.68 M20.85 25.56 L21.67 25.09 M21.43 26.97 L22.35 26.73"/><circle class="part soft" cx="15.79" cy="28.49" r="3.06"/><path class="mark" d="M15.79 27.13 V23.05"/></g>
+      <circle class="led" cx="16.09" cy="-22.5" r="2.7"/>
+      <circle class="led" cx="-16.26" cy="41.31" r="2.9"/>
+      <circle class="led" cx="15.78" cy="41.31" r="2.9"/>
+      <circle class="led" cx="-0.24" cy="41.31" r="2.9"/>
+      <g class="dim">
+      <path d="M-28.2 -64.45 H27.7 M-28.2 -66.45 V-62.45 M27.7 -66.45 V-62.45"/>
+      <text class="dt" x="-0.25" y="-66.85" text-anchor="middle">55.9 mm</text>
+      <path d="M34.7 -57.45 V49.45 M32.7 -57.45 H36.7 M32.7 49.45 H36.7"/>
+      <text class="dt" x="37.3" y="-4" text-anchor="middle" transform="rotate(90 37.3 -4)">106.9 mm</text>
+      </g>
+      <g class="labels">
+      <text class="lb" x="-21.87" y="2.67" text-anchor="start">U1 · ESP32</text>
+      <text class="lb" x="15.78" y="-26.1" text-anchor="middle">SW3</text>
+      <text class="lb" x="23.13" y="13.14" text-anchor="end">U2</text>
+      <text class="lb" x="-22.53" y="9.46" text-anchor="start">U7</text>
+      <text class="lb" x="-16.21" y="38.49" text-anchor="middle">SW1</text>
+      <text class="lb" x="0.04" y="38.49" text-anchor="middle">SW2</text>
+      <text class="lb" x="15.79" y="38.49" text-anchor="middle">SW4</text>
+      </g>
+      </svg>
+      </div>
+      <svg id="leaders" aria-hidden="true"><g class="lead" id="lead-lines"></g><g class="dim" id="dims"></g></svg>
+      <ul class="labels labels-l" id="labels-l" aria-hidden="true"></ul>
+      <ul class="labels labels-r" id="labels-r" aria-hidden="true"></ul>
+      <div class="tip" id="tip" hidden></div>
+      <div class="loading" id="loading" role="status">
+        <div><span id="load-msg">Loading the board</span><span class="bar"><b id="load-bar"></b></span></div>
+      </div>
+      <div class="ticker" id="ticker" aria-hidden="true">
+        <span class="tk-label" id="tk-label">Envoy V1</span>
+        <div class="tk-track" id="tk-track"><span class="tk-head" id="tk-head"></span></div>
+        <span class="tk-pct" id="tk-pct">0%</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="td-story" id="story">
+    <section class="ch ch-hero" data-name="Envoy V1">
+      <div class="copy">
+        <p class="eyebrow">Envoy V1 · by JIT Labs</p>
+        <h2 class="hero-h" id="hero-title">Pocket-sized tone engine<span class="dot">.</span></h2>
+        <p class="lede">An ESP32 tone controller for guitarists: three rotary encoders under printed knobs, one master button and Bluetooth LE MIDI,
+          in a printed tray and bezel with a key loop. Scroll and it comes apart, layer by layer, down to a single resistor.</p>
+        <dl class="specs">
+          <div><dt>Brain</dt><dd>ESP32 DevKit V1</dd></div>
+          <div><dt>Controls</dt><dd>3 × EC11 encoders, 12 mm master button</dd></div>
+          <div><dt>Link</dt><dd>Bluetooth LE MIDI</dd></div>
+          <div><dt>Board</dt><dd>50.4 × 91.0 mm, 1.6 mm FR-4</dd></div>
+          <div><dt>Enclosure</dt><dd>55.9 × 106.9 mm printed tray + bezel</dd></div>
+        </dl>
+        <div class="hero-row">
+          <button class="cta" id="cta" type="button">Take it apart
+            <svg viewBox="0 0 10 18" aria-hidden="true"><path d="M5 0v16M1 12l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+          </button>
+          <a class="btn-link" href="https://envoy.phamryan.com" target="_blank" rel="noopener">envoy.phamryan.com <span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="swatches" role="group" aria-label="Enclosure colourway">
+          <span>Colourway</span>
+          <button class="sw sw--ember" type="button" data-cw="ember" aria-pressed="false"><i></i>Ember</button>
+          <button class="sw sw--carbon" type="button" data-cw="carbon" aria-pressed="true"><i></i>Carbon</button>
+          <button class="sw sw--bone" type="button" data-cw="bone" aria-pressed="false"><i></i>Bone</button>
+        </div>
+        <p class="fine">Dropping 1 December 2026.</p>
+      </div>
+    </section>
+
+    <section class="ch" data-name="Enclosure" id="enclosure">
+      <div class="copy">
+        <p class="eyebrow">01 · Enclosure</p>
+        <h2>Two shells, one board.</h2>
+        <p class="lede">The bezel frame lifts off and the tray drops away. The board sits between them with its top flush to the tray rim.</p>
+        <ul class="facts"><li>Frame 55.9 × 106.9 mm, 2.4 mm tall</li><li>Tray 18.0 mm deep</li></ul>
+      </div>
+    </section>
+
+    <section class="ch" data-name="Assembly">
+      <div class="copy">
+        <p class="eyebrow">02 · Assembly</p>
+        <h2>23 parts, all through-hole.</h2>
+        <p class="lede">On this board every part pushes its legs through the FR-4 and is soldered from underneath. The only surface-mount parts ride along on the ESP32 DevKit.</p>
+        <p class="notice"><b>Latest revision</b>The resistors are now surface-mount, and the board adds decoupling capacitors. This teardown uses the earlier through-hole board model.</p>
+      </div>
+    </section>
+
+    <section class="ch" data-name="Board stack">
+      <div class="copy">
+        <p class="eyebrow">03 · Board stack</p>
+        <h2>1.6 mm, five layers deep.</h2>
+        <p class="lede">Silkscreen, solder mask, copper, the FR-4 core and the back mask, pulled apart so you can see what a circuit board is made of.</p>
+        <ul class="facts"><li>Board 50.4 × 91.0 mm</li><li>Core 1.6 mm</li></ul>
+      </div>
+    </section>
+
+    <section class="ch" data-name="ESP32">
+      <div class="copy">
+        <p class="eyebrow">04 · U1 · ESP32 DevKit V1</p>
+        <h2>227 pieces in one module.</h2>
+        <p class="lede">The DevKit is a whole board of its own. The RF shield lifts off the ESP32, thirty header pins drop out, and every surface-mount part on it floats free.</p>
+      </div>
+    </section>
+
+    <section class="ch" data-name="Encoder">
+      <div class="copy">
+        <p class="eyebrow">05 · SW2 · Rotary encoder</p>
+        <h2>Six pieces under every knob.</h2>
+        <p class="lede">Shaft, nut, threaded bushing, top plate, body and legs. All three encoders are the same part. SW2 is the middle one.</p>
+      </div>
+    </section>
+
+    <section class="ch" data-name="Resistor">
+      <div class="copy">
+        <p class="eyebrow">06 · R5 · Axial resistor</p>
+        <h2>Down to three pieces.</h2>
+        <p class="lede">A DIN0207 body stood on end, plus two tinned leads. It is as far down as this board goes.</p>
+        <p class="notice"><b>Latest revision</b>R5 and the other resistors are surface-mount parts now, with decoupling capacitors added to the board. This is the through-hole version.</p>
+        <ul class="facts" id="r5-facts"><li>Body 6.3 mm tall</li><li>Ø 2.5 mm</li></ul>
+      </div>
+    </section>
+
+    <section class="ch ch-explore" data-name="Explore" id="explore">
+      <div class="copy">
+        <p class="eyebrow">07 · Explore</p>
+        <h2>Pick any part.</h2>
+        <p class="lede">Hover a part to name it and click it to split it into pieces. With a mouse, drag empty space to turn the board.</p>
+        <p class="totals" id="totals"></p>
+        <ul class="bom" id="bom"></ul>
+        <p class="notice"><b>Latest revision</b>The 12 resistors listed here are through-hole on this model. The latest board uses SMD resistors and adds decoupling capacitors, which this model does not include yet.</p>
+      </div>
+    </section>
+  </div>
+</section>
+
+<!-- ============================ PROJECTS ============================ -->
+<section class="sec" id="projects">
+  <div class="sec-head" data-rg>
+    <div>
+      <span class="kicker" data-r>More work</span>
+      <h2 data-r>Other problems<br>I'm solving.</h2>
+    </div>
+    <p data-r>Hardware, firmware and full-stack. Each one started with something I wanted to exist.</p>
+  </div>
+
+  <div class="grid" data-rg>
+    <article class="pcard wide" data-r>
+      <span class="n">01</span>
+      <div class="ico"><svg viewBox="0 0 48 48" aria-hidden="true">
+        <rect x="4" y="10" width="40" height="28" rx="3"/>
+        <rect x="9" y="15" width="7" height="7"/><rect x="19" y="15" width="7" height="7"/>
+        <rect x="9" y="25" width="7" height="7"/><rect x="19" y="25" width="7" height="7"/>
+        <path d="M33 15 V33 M39 15 V33"/><circle cx="33" cy="20" r="2"/><circle cx="39" cy="28" r="2"/>
+      </svg></div>
+      <h3>MIDI controllers</h3>
+      <p>Embedded firmware for ESP32-based MIDI controllers.</p>
+      <div class="tags"><span>ESP32</span><span>Firmware</span><span>MIDI</span></div>
+    </article>
+
+    <article class="pcard wide" data-r>
+      <span class="n">02</span>
+      <div class="ico"><svg viewBox="0 0 48 48" aria-hidden="true">
+        <path d="M4 8 H44"/><path d="M14 8 V14 M34 8 V14"/>
+        <path d="M10 14 H18 L21 24 H7 Z"/><path d="M30 14 H38 L41 24 H27 Z"/>
+        <path d="M8 26 L4 44 M20 26 L24 44 M28 26 L24 44 M40 26 L44 44"/>
+      </svg></div>
+      <h3>DMX light rigs</h3>
+      <p>Firmware for ESP32-based DMX lighting rigs.</p>
+      <div class="tags"><span>ESP32</span><span>DMX</span><span>Firmware</span></div>
+    </article>
+
+    <article class="pcard wide" data-r>
+      <span class="n">03</span>
+      <div class="ico"><svg viewBox="0 0 48 48" aria-hidden="true">
+        <rect x="4" y="18" width="24" height="8" rx="1"/><rect x="4" y="28" width="24" height="8" rx="1"/><rect x="4" y="38" width="24" height="8" rx="1"/>
+        <path d="M9 22 H11 M9 32 H11 M9 42 H11"/>
+        <path d="M30 4 H44 A2 2 0 0 1 46 6 V16 A2 2 0 0 1 44 18 H36 L31 22 V18 H30 A2 2 0 0 1 28 16 V6 A2 2 0 0 1 30 4 Z"/>
+        <path d="M33 11 H34 M37 11 H38 M41 11 H42"/>
+      </svg></div>
+      <h3>Homelab AI assistant</h3>
+      <p>An AI assistant hosted on my own homelab instead of someone else's cloud.</p>
+      <div class="tags"><span>Homelab</span><span>Self-hosted</span><span>Full-stack</span></div>
+    </article>
+
+    <article class="pcard wide" data-r>
+      <span class="n">04</span>
+      <div class="ico"><svg viewBox="0 0 48 48" aria-hidden="true">
+        <rect x="4" y="8" width="40" height="32" rx="2"/><rect x="18" y="18" width="12" height="12"/>
+        <path d="M8 14 H18 V18 M30 24 H40 M24 30 V36 M10 34 H18 V30"/>
+        <circle cx="8" cy="14" r="2"/><circle cx="40" cy="24" r="2"/><circle cx="24" cy="36" r="2"/><circle cx="10" cy="34" r="2"/>
+      </svg></div>
+      <h3>Custom PCBs</h3>
+      <p>Boards designed and fabricated in KiCad, from schematic to finished board.</p>
+      <div class="tags"><span>KiCad</span><span>PCB design</span><span>Fabrication</span></div>
+    </article>
+  </div>
+</section>
+
+
+<!-- ============================ CONTACT (scroll-in: each card is a link) ============================ -->
+<!-- swap each href="#" for your real links -->
+<!-- at the very end, the whole screen zooms out onto the CRT from the original site (outro/) -->
+<section class="tunnel tunnel-contact" id="contact" data-rest="last" aria-label="Contact and social links">
+  <div class="tunnel-stage">
+    <iframe class="outro-scene" data-src="outro/scene.html" title="Starry valley with an old PC" aria-hidden="true" tabindex="-1"></iframe>
+    <div class="screen">
+    <canvas class="tunnel-fx" aria-hidden="true"></canvas>
+    <div class="tunnel-bar"><i></i></div>
+    <div class="tunnel-hud" aria-hidden="true"><span class="th-hint">Keep scrolling to find me ↓</span><span><b class="th-now">01</b> / <span class="th-total">06</span></span></div>
+    <div class="tunnel-world">
+      <article class="tcard hero">
+        <span class="num">CONTACT</span>
+        <h2>Let's build something.</h2>
+        <p>Got a problem worth solving? I'd like to hear about it. Here's where to find me.</p>
+      </article>
+      <a class="tcard link" style="--brand:#5b8cff" href="#">
+        <span class="brand" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#logo-email"/></svg></span>
+        <svg class="wm" aria-hidden="true" viewBox="0 0 24 24"><use href="#logo-email"/></svg>
+        <span class="num">EMAIL</span>
+        <h2>Say hello</h2>
+        <p>The fastest way to reach me about a project, a role or a workshop.</p>
+        <span class="go">Write an email →</span>
+      </a>
+      <a class="tcard link" style="--brand:#0a66c2" href="#" target="_blank" rel="noopener">
+        <span class="brand" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#logo-linkedin"/></svg></span>
+        <svg class="wm" aria-hidden="true" viewBox="0 0 24 24"><use href="#logo-linkedin"/></svg>
+        <span class="num">LINKEDIN</span>
+        <h2>LinkedIn</h2>
+        <p>Experience, coursework and what I'm working toward.</p>
+        <span class="go">Connect ↗</span>
+      </a>
+      <a class="tcard link" style="--brand:#ffffff" href="#" target="_blank" rel="noopener">
+        <span class="brand" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#logo-github"/></svg></span>
+        <svg class="wm" aria-hidden="true" viewBox="0 0 24 24"><use href="#logo-github"/></svg>
+        <span class="num">GITHUB</span>
+        <h2>GitHub</h2>
+        <p>Code for my projects, from firmware to full-stack.</p>
+        <span class="go">Browse the code ↗</span>
+      </a>
+      <a class="tcard link" style="--brand:#e4405f" href="#" target="_blank" rel="noopener">
+        <span class="brand" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#logo-instagram"/></svg></span>
+        <svg class="wm" aria-hidden="true" viewBox="0 0 24 24"><use href="#logo-instagram"/></svg>
+        <span class="num">INSTAGRAM</span>
+        <h2>Instagram</h2>
+        <p>Builds in progress and life outside the lab.</p>
+        <span class="go">Follow along ↗</span>
+      </a>
+      <article class="tcard hero finale">
+        <span class="num">THANKS FOR SCROLLING</span>
+        <h2>Ryan Pham</h2>
+        <p>Computer Engineering · George Mason University · © 2026</p>
+      </article>
+    </div>
+    <div class="crt-fx" aria-hidden="true"></div>
+    <div class="activate" aria-hidden="true"><span>Activate Windows</span><small>Go to Settings to activate Windows.</small></div>
+    </div>
+  </div>
+  <div class="tunnel-track"></div>
+  <div class="outro-track"></div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/animejs@4.4.1/dist/bundles/anime.umd.min.js" crossorigin="anonymous"></script>
+<script src="js/winter.js"></script>
+<script src="js/tunnel.js"></script>
+<script src="js/stack.js"></script>
+<script src="js/portfolio.js"></script>
+<script src="js/outro.js"></script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+} }
+</script>
+<script src="js/teardown.js"></script>
 </body>
 </html>
